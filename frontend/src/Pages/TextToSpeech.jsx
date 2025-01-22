@@ -34,6 +34,7 @@ const TextToSpeech = () => {
   const audioContext = useRef(null);
   const mediaRecorder = useRef(null);
   const audioChunks = useRef([]);
+  const isStopping = useRef(false);
 
   useEffect(() => {
     const loadVoices = () => {
@@ -96,6 +97,19 @@ const TextToSpeech = () => {
       setIsConverting(false);
       alert("Error generating audio file. Please try again.");
     }
+  };
+
+  const handleStop = () => {
+    isStopping.current = true;
+    setIsConverting(false);
+
+    // Stop media recorder if recording
+    if (mediaRecorder.current && mediaRecorder.current.state === "recording") {
+      mediaRecorder.current.stop();
+    }
+
+    // Stop the speech synthesis
+    window.responsiveVoice.cancel();
   };
 
   const handleDownload = () => {
@@ -283,6 +297,15 @@ const TextToSpeech = () => {
                 {isConverting ? <Loader2 className="w-5 h-5 mr-2 animate-spin" /> : <Play className="w-5 h-5 mr-2" />}
                 Convert to Audio
               </button>
+
+              {isConverting && (
+                <button
+                  onClick={handleStop}
+                  className="w-full sm:w-auto flex items-center px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                >
+                  Stop
+                </button>
+              )}
 
               {audioBlob && (
                 <button

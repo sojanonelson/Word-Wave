@@ -34,7 +34,7 @@ const Home = () => {
         setIsLoggedIn(true);
         const text = "Welcome back, admin!";
         if (window.responsiveVoice) {
-          window.responsiveVoice.speak(text, "UK English Male");  // You can change the voice if needed
+          window.responsiveVoice.speak(text, "Australian Female");  // You can change the voice if needed
         }
       } else {
         setIsLoggedIn(false); // User is not logged in

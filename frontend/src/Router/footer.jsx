@@ -73,14 +73,6 @@ const FooterLink = ({ href, children }) => (
   </li>
 );
 
-const SocialIcon = ({ icon, href }) => (
-  <a 
-    href={href}
-    className="w-8 h-8 rounded-full bg-gray-800 flex items-center justify-center 
-      hover:bg-indigo-600 transition-colors duration-200"
-  >
-    {icon}
-  </a>
-);
+
 
 export default Footer;

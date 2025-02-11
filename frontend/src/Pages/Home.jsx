@@ -4,11 +4,12 @@ import { Mic, Volume2, ArrowRightLeft, Play, Users } from "lucide-react";
 import Footer from "../Router/footer";
 import { Link, useNavigate } from "react-router-dom";
 
-import { checkIfAdmin } from "../services/generalService";
+import {  getUserResponse } from "../services/generalService";
 
 const Home = () => {
   const [showFloatingScreen, setShowFloatingScreen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState();
+  const [name, setName] = useState();
   const navigate = useNavigate();
 
   const handleTryNowClick = () => {
@@ -17,7 +18,7 @@ const Home = () => {
       navigate('/login')
 
     }else{
-      setShowFloatingScreen(true);
+      navigate('/dashboard')
 
     }
     
@@ -29,13 +30,11 @@ const Home = () => {
 
   useEffect(() => {
     const check = () => {
-      const token = checkIfAdmin();
-      if (token) {
+      const user = getUserResponse();
+      if (user) {
         setIsLoggedIn(true);
-        const text = "Welcome back, admin!";
-        if (window.responsiveVoice) {
-          window.responsiveVoice.speak(text, "Australian Female");  // You can change the voice if needed
-        }
+        setName(user.name);
+        
       } else {
         setIsLoggedIn(false); // User is not logged in
       }
@@ -47,10 +46,10 @@ const Home = () => {
   console.log("ADMIN",isLoggedIn)
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-indigo-50 to-purple-50">
+    <div className="min-h-screen bg-gradient-to-br  poppins-regular from-indigo-50 to-purple-50">
       {/* Navigation */}
       <nav className="w-full px-6 py-4 flex justify-between items-center bg-white/70 backdrop-blur-sm">
-        <div className="text-2xl font-bold text-indigo-600">Word Wave</div>
+        <div className="text-2xl font-bold text-indigo-600 poppins-bold">Word Wave</div>
         <div className="space-x-6">
           <button className="text-gray-600 hover:text-indigo-600">
             Features
@@ -59,8 +58,8 @@ const Home = () => {
           <button className="text-gray-600 hover:text-indigo-600">Docs</button>
           {
   isLoggedIn  ? (
-    <button className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700">
-      Admin
+    <button className="px-4 py-2 bg-indigo-700 text-white rounded-lg hover:bg-indigo-800">
+      {name}
     </button>
   ) : (
     <Link to="/login">

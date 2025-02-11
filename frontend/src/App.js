@@ -1,11 +1,13 @@
-import logo from './logo.svg';
-import './App.css';
-import AppRouter from './Router/AppRouter';
+
+import AppRouter from "./Router/AppRouter";
+
+import "./App.css";
 
 function App() {
+
   return (
-    <div className="App bg-red-600">
-     <AppRouter/>
+    <div className="App">
+      <AppRouter />
     </div>
   );
 }

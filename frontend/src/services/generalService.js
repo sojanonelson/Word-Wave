@@ -16,7 +16,21 @@ const checkUserLoggedIn = () => {
     }
     return false; // Token doesn't match 'admin'
   }
+
+
+
  
   
 
-export {checkUserLoggedIn,checkIfAdmin}
+
+
+const saveUserResponse = (response) => {
+  localStorage.setItem('user', JSON.stringify(response));
+}
+
+const getUserResponse = () => {
+  const response = localStorage.getItem('user');
+  return response ? JSON.parse(response) : null;
+}
+
+export { saveUserResponse, getUserResponse,checkUserLoggedIn,checkIfAdmin }

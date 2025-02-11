@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { Eye, EyeOff, Mic, Volume2, BrainCircuit, Waves } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
+import {login} from '../services/authService'; // Import the authService
+import { saveUserResponse } from '../services/generalService';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -9,20 +11,24 @@ const Login = () => {
   const [password, setPassword] = useState('');
   const navigate = useNavigate();
   
-
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // Validate email and password
-    if (email === 'admin@gmail.com' && password === 'admin123') {
-      localStorage.setItem('authToken', 'admin');
-
-
-      
-      // Navigate to home screen
-      navigate('/');
-    } else {
-      alert('Invalid credentials');
+    try {
+      const response = await login(email, password);
+      if (response) {
+       
+        saveUserResponse(response);
+        localStorage.setItem('userID', response.userId);
+        console.log('USERID:', response.userId);
+       
+        navigate('/dashboard');
+      } else {
+        alert('Invalid credentials');
+      }
+    } catch (error) {
+      console.error('Login error:', error);
+      alert('An error occurred during login. Please try again.');
     }
   };
 
@@ -115,31 +121,6 @@ const Login = () => {
               </p>
             </p>
           </Link>
-
-          
-          {/* <div className="relative mt-6">
-            <div className="absolute inset-0 flex items-center">
-              <div className="w-full border-t border-gray-300"></div>
-            </div>
-            <div className="relative flex justify-center text-sm">
-              <span className="px-4 bg-white text-gray-500">Or continue with</span>
-            </div>
-          </div> */}
-
-          {/* <div className="mt-6 grid grid-cols-2 gap-4">
-            <button className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                <path d="M12.545,10.239v3.821h5.445c-0.712,2.315-2.647,3.972-5.445,3.972c-3.332,0-6.033-2.701-6.033-6.032s2.701-6.032,6.033-6.032c1.498,0,2.866,0.549,3.921,1.453l2.814-2.814C17.503,2.988,15.139,2,12.545,2C7.021,2,2.543,6.477,2.543,12s4.478,10,10.002,10c8.396,0,10.249-7.85,9.426-11.748L12.545,10.239z" fill="currentColor"/>
-              </svg>
-              Google
-            </button>
-            <button className="flex items-center justify-center px-4 py-2 border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors">
-              <svg className="w-5 h-5 mr-2" viewBox="0 0 24 24">
-                <path d="M12 0c-6.627 0-12 5.373-12 12s5.373 12 12 12 12-5.373 12-12-5.373-12-12-12zm3 8h-1.35c-.538 0-.65.221-.65.778v1.222h2l-.209 2h-1.791v7h-3v-7h-2v-2h2v-2.308c0-1.769.931-2.692 3.029-2.692h1.971v3z" fill="currentColor"/>
-              </svg>
-              Facebook
-            </button>
-          </div> */}
         </div>
       </div>
     </div>

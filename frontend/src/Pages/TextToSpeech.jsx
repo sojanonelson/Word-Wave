@@ -20,7 +20,7 @@ const CardContent = ({ children, className = "" }) => (
 );
 
 const TextToSpeech = () => {
-  const [text, setText] = useState("3D Speaking Animated Avatars and Characters");
+  const [text, setText] = useState("This is a test message");
   const [voiceList, setVoiceList] = useState([]);
   const [selectedVoice, setSelectedVoice] = useState("");
   const [speed, setSpeed] = useState(1);
@@ -166,7 +166,7 @@ const TextToSpeech = () => {
   };
 
   return (
-    <div className="min-h-screen bg-slate-50 p-4 sm:p-8">
+    <div className="min-h-screen bg-slate-50 p-2 sm:p-8">
       <div className="max-w-5xl mx-auto space-y-6">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-4">
           <div>

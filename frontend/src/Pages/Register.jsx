@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
-import { Eye, EyeOff, Mic, Volume2, BrainCircuit, Waves, User } from 'lucide-react';
+import { Eye, EyeOff, Mic, Volume2, BrainCircuit, Waves, User, Upload } from 'lucide-react';
+import { createAccount } from '../services/authService';
+import {toast} from 'react-toastify'
+import {useNavigate} from 'react-router-dom'
 
 const Register = () => {
   const [formData, setFormData] = useState({
@@ -10,10 +13,49 @@ const Register = () => {
   });
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [profileImage, setProfileImage] = useState(null);
+  const [previewUrl, setPreviewUrl] = useState(null);
+  const [loading, setLoading] = useState(false);
+const [error, setError] = useState('');
+const navigate = useNavigate()
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    // Handle registration logic here
+    setError('');
+    setLoading(true);
+  
+    try {
+      // Validate password match if you have confirm password
+      if (formData.password !== formData.confirmPassword) {
+        throw new Error('Passwords do not match');
+      }
+  
+      const result = await createAccount(formData.email, formData.password, formData.name, profileImage);
+      
+      // Handle successful registration
+      if (result) {
+        // Optionally show success message
+        toast.success('Account created successfully', {
+          position: 'top-right',
+          autoClose: 3000,
+          hideProgressBar: false,
+          closeOnClick: true,
+          pauseOnHover: true,
+          draggable: true,
+          progress: undefined,
+        });
+        // Redirect to login
+        navigate('/login');
+      }
+  
+    } catch (err) {
+      // Set error message for display
+      setError(err.message || 'Failed to create account');
+      toast.error(err.message || 'Failed to create account');
+      console.error('Registration error:', err);
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleChange = (e) => {
@@ -21,6 +63,18 @@ const Register = () => {
       ...formData,
       [e.target.name]: e.target.value
     });
+  };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setProfileImage(file);
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setPreviewUrl(reader.result);
+      };
+      reader.readAsDataURL(file);
+    }
   };
 
   return (
@@ -48,6 +102,29 @@ const Register = () => {
 
           {/* Register Form */}
           <form onSubmit={handleSubmit} className="space-y-6">
+          <div className="flex flex-col items-center space-y-4">
+              <div className="relative w-24 h-24 rounded-full overflow-hidden bg-gray-100">
+                {previewUrl ? (
+                  <img src={previewUrl} alt="Profile preview" className="w-full h-full object-cover" />
+                ) : (
+                  <div className="w-full h-full flex items-center justify-center">
+                    <User className="w-12 h-12 text-gray-400" />
+                  </div>
+                )}
+              </div>
+              <div className="flex items-center space-x-2">
+                <label className="cursor-pointer flex items-center space-x-2 text-sm text-indigo-600 hover:text-indigo-800">
+                  <Upload size={16} />
+                  <span>Upload Photo</span>
+                  <input
+                    type="file"
+                    className="hidden"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                  />
+                </label>
+              </div>
+            </div>
             {/* Username */}
             <div>
               <label className="block text-sm font-medium text-gray-700 mb-2">

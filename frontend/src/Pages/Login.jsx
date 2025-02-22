@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import { Link } from 'react-router-dom';
 import {login} from '../services/authService'; // Import the authService
 import { saveUserResponse } from '../services/generalService';
+import { toast } from 'react-toastify';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -19,6 +20,15 @@ const Login = () => {
       if (response) {
        
         saveUserResponse(response);
+        toast.success('User logged in', {
+                  position: 'top-right',
+                  autoClose: 3000,
+                  hideProgressBar: false,
+                  closeOnClick: true,
+                  pauseOnHover: true,
+                  draggable: true,
+                  progress: undefined,
+                });
         localStorage.setItem('userID', response.userId);
         console.log('USERID:', response.userId);
        

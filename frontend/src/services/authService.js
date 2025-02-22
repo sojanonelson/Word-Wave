@@ -12,12 +12,25 @@ export const login = async (email, password) => {
     throw new Error(error.response.data.message || 'Error logging in');
   }
 };
-
-export const createAccount = async (email, password, name) => {
+export const createAccount = async (email, password, name, image) => {
   try {
-    const response = await axios.post(`${API_URL}/register`, { email, password, name });
+    // Create FormData object
+    const formData = new FormData();
+    formData.append('email', email);
+    formData.append('password', password);
+    formData.append('name', name);
+    if (image) {
+      formData.append('profileImage', image); // Append file object, not URL
+    }
+
+    const response = await axios.post(`${API_URL}/user/register`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data', // Important for file upload
+      },
+    });
+    
     return response.data;
   } catch (error) {
-    throw new Error(error.response.data.message || 'Error creating account');
+    throw new Error(error.response?.data?.message || 'Error creating account');
   }
 };
